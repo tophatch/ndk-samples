@@ -3,15 +3,20 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
-    ndkVersion '22.1.7171670'
+    compileSdkVersion 32
+    ndkVersion '23.1.7779620'
 
     defaultConfig {
         applicationId 'com.example.hellojni'
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_shared", "-DANDROID_CPP_FEATURES=exceptions", "-DANDROID_ARM_NEON=TRUE"
+            }
+        }
     }
     buildFeatures {
         viewBinding true

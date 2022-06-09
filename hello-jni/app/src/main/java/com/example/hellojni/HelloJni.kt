@@ -16,13 +16,23 @@
 package com.example.hellojni
 
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hellojni.databinding.ActivityHelloJniBinding
+import java.io.File
 
 class HelloJni : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
+
+        Log.d("[APPLOG] onCreate", getFilesDir().getAbsolutePath())
+
+
+        init(getFilesDir().getAbsolutePath())
         /*
          * Retrieve our TextView and set its content.
          * the text is retrieved by calling a native
@@ -30,15 +40,27 @@ class HelloJni : AppCompatActivity() {
          */
         val binding = ActivityHelloJniBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.helloTextview.text = stringFromJNI()
+
+
+
     }
 
-    /*
-     * A native method that is implemented by the
-     * 'hello-jni' native library, which is packaged
-     * with this application.
-     */
-    external fun stringFromJNI(): String?
+    override fun onPause() {
+        super.onPause()
+        stopReplication();
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resumeReplication()
+    }
+
+
+    external fun init(databasePath:String)
+
+    external fun stopReplication()
+
+    external fun resumeReplication()
 
     /*
      * This is another native method declaration that is *not*
@@ -54,12 +76,12 @@ class HelloJni : AppCompatActivity() {
     external fun unimplementedStringFromJNI(): String?
 
     companion object {
-    /*
-     * this is used to load the 'hello-jni' library on application
-     * startup. The library has already been unpacked into
-     * /data/data/com.example.hellojni/lib/libhello-jni.so
-     * at the installation time by the package manager.
-     */
+        /*
+         * this is used to load the 'hello-jni' library on application
+         * startup. The library has already been unpacked into
+         * /data/data/com.example.hellojni/lib/libhello-jni.so
+         * at the installation time by the package manager.
+         */
         init {
             System.loadLibrary("hello-jni")
         }
